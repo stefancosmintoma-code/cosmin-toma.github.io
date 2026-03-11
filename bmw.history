@@ -1,0 +1,1191 @@
+ <!doctype html>
+<html lang="ro" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Istoria BMW - Atestat Informatică</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&amp;family=Rajdhani:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; padding: 0; }
+    
+    .font-orbitron { font-family: 'Orbitron', monospace; }
+    .font-rajdhani { font-family: 'Rajdhani', sans-serif; }
+    
+    .page { display: none; opacity: 0; transition: opacity 0.5s ease; }
+    .page.active { display: block; opacity: 1; }
+    
+    .nav-btn {
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+    .nav-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s ease;
+    }
+    .nav-btn:hover::before { left: 100%; }
+    
+    .card-hover {
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .card-hover:hover {
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: 0 25px 50px -12px rgba(0, 102, 204, 0.4);
+    }
+    
+    .timeline-item {
+      opacity: 0;
+      transform: translateX(-50px);
+      animation: slideIn 0.6s ease forwards;
+    }
+    .timeline-item:nth-child(1) { animation-delay: 0.1s; }
+    .timeline-item:nth-child(2) { animation-delay: 0.2s; }
+    .timeline-item:nth-child(3) { animation-delay: 0.3s; }
+    .timeline-item:nth-child(4) { animation-delay: 0.4s; }
+    .timeline-item:nth-child(5) { animation-delay: 0.5s; }
+    .timeline-item:nth-child(6) { animation-delay: 0.6s; }
+    
+    @keyframes slideIn {
+      to { opacity: 1; transform: translateX(0); }
+    }
+    
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 20px rgba(0, 102, 204, 0.5); }
+      50% { box-shadow: 0 0 40px rgba(0, 102, 204, 0.8), 0 0 60px rgba(0, 102, 204, 0.4); }
+    }
+    
+    .glow-effect { animation: pulse-glow 2s ease-in-out infinite; }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
+    }
+    .float-animation { animation: float 3s ease-in-out infinite; }
+    
+    .progress-bar {
+      transition: width 0.5s ease;
+    }
+    
+    .quiz-option {
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    .quiz-option:hover:not(.disabled) {
+      transform: scale(1.02);
+      border-color: #0066cc;
+    }
+    .quiz-option.correct {
+      background: linear-gradient(135deg, #10b981, #059669) !important;
+      border-color: #10b981 !important;
+      color: white !important;
+    }
+    .quiz-option.incorrect {
+      background: linear-gradient(135deg, #ef4444, #dc2626) !important;
+      border-color: #ef4444 !important;
+      color: white !important;
+    }
+    
+    .hero-gradient {
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0d0d1a 100%);
+    }
+    
+    .bmw-blue-gradient {
+      background: linear-gradient(135deg, #0066cc 0%, #004499 100%);
+    }
+    
+    .glass-effect {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .counter-animation {
+      display: inline-block;
+    }
+    
+    @keyframes countUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .stat-number {
+      animation: countUp 0.8s ease forwards;
+    }
+    
+    .model-card {
+      background: linear-gradient(145deg, #1a1a2e, #0d0d1a);
+      border: 1px solid rgba(0, 102, 204, 0.3);
+    }
+    
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full bg-gray-900 text-white font-rajdhani scrollbar-hide overflow-auto"><!-- Navigation -->
+  <nav id="main-nav" class="fixed top-0 left-0 right-0 z-50 glass-effect">
+   <div class="max-w-7xl mx-auto px-4 py-3">
+    <div class="flex items-center justify-between">
+     <div class="flex items-center gap-3">
+      <div class="w-12 h-12 rounded-full bmw-blue-gradient flex items-center justify-center glow-effect">
+  <img src="https://uploads.onecompiler.io/44e455y47/44e456xmr/bmw.png" alt="Sigla Site" class="w-8 h-8 object-contain" />
+</div>
+
+      </div><span id="nav-title" class="font-orbitron text-xl font-bold tracking-wider">BMW HISTORY</span>
+     </div>
+     <div class="hidden md:flex items-center gap-2"><button onclick="navigateTo('home')" class="nav-btn px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-600/30 transition-all" data-page="home">ACASĂ</button> <button onclick="navigateTo('history')" class="nav-btn px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-600/30 transition-all" data-page="history">ISTORIE</button> <button onclick="navigateTo('models')" class="nav-btn px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-600/30 transition-all" data-page="models">MODELE</button> <button onclick="navigateTo('technology')" class="nav-btn px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-600/30 transition-all" data-page="technology">TEHNOLOGIE</button> <button onclick="navigateTo('motorsport')" class="nav-btn px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-600/30 transition-all" data-page="motorsport">MOTORSPORT</button> <button onclick="navigateTo('quiz')" class="nav-btn px-4 py-2 rounded-lg bmw-blue-gradient text-sm font-semibold glow-effect" data-page="quiz">QUIZ</button>
+     </div><button onclick="toggleMobileMenu()" class="md:hidden p-2 rounded-lg hover:bg-blue-600/30">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+      </svg></button>
+    </div><!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden mt-4 pb-4 border-t border-white/10 pt-4">
+     <div class="flex flex-col gap-2"><button onclick="navigateTo('home'); toggleMobileMenu();" class="nav-btn px-4 py-3 rounded-lg text-left font-semibold hover:bg-blue-600/30">ACASĂ</button> <button onclick="navigateTo('history'); toggleMobileMenu();" class="nav-btn px-4 py-3 rounded-lg text-left font-semibold hover:bg-blue-600/30">ISTORIE</button> <button onclick="navigateTo('models'); toggleMobileMenu();" class="nav-btn px-4 py-3 rounded-lg text-left font-semibold hover:bg-blue-600/30">MODELE</button> <button onclick="navigateTo('technology'); toggleMobileMenu();" class="nav-btn px-4 py-3 rounded-lg text-left font-semibold hover:bg-blue-600/30">TEHNOLOGIE</button> <button onclick="navigateTo('motorsport'); toggleMobileMenu();" class="nav-btn px-4 py-3 rounded-lg text-left font-semibold hover:bg-blue-600/30">MOTORSPORT</button> <button onclick="navigateTo('quiz'); toggleMobileMenu();" class="nav-btn px-4 py-3 rounded-lg bmw-blue-gradient font-semibold text-center">QUIZ</button>
+     </div>
+    </div>
+   </div>
+  </nav><!-- Page Container -->
+  <main class="w-full min-h-full"><!-- HOME PAGE -->
+   <section id="page-home" class="page active min-h-full"><!-- Hero Section -->
+    <div class="hero-gradient min-h-screen flex items-center justify-center relative overflow-hidden pt-20">
+     <div class="absolute inset-0 opacity-20">
+      <div class="absolute top-20 left-10 w-72 h-72 bg-blue-500 rounded-full filter blur-3xl"></div>
+      <div class="absolute bottom-20 right-10 w-96 h-96 bg-blue-700 rounded-full filter blur-3xl"></div>
+     </div>
+     <div class="relative z-10 text-center px-4 max-w-5xl mx-auto">
+      <div class="float-animation mb-8">
+       <div class="w-32 h-32 mx-auto rounded-full bmw-blue-gradient flex items-center justify-center glow-effect">
+       <img src="https://uploads.onecompiler.io/44e455y47/44e456xmr/bmw.png" alt="Sigla animată" class="w-24 h-24 mx-auto rounded-full glow-effect object-contain" />
+       </div>
+      </div>
+      <h1 id="hero-title" class="font-orbitron text-5xl md:text-7xl font-black mb-4 bg-gradient-to-r from-white via-blue-200 to-white bg-clip-text text-transparent">ISTORIA BMW</h1>
+      <p id="hero-subtitle" class="font-orbitron text-xl md:text-2xl text-blue-400 mb-8 tracking-widest">SHEER DRIVING PLEASURE</p>
+      <p class="text-lg md:text-xl text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed">Descoperă povestea fascinantă a uneia dintre cele mai prestigioase mărci auto din lume. De la motoare de avioane la automobile de lux și performanță.</p>
+      <div class="flex flex-wrap justify-center gap-4 mb-16"><button onclick="navigateTo('history')" class="px-8 py-4 bmw-blue-gradient rounded-xl font-orbitron font-bold text-lg hover:scale-105 transition-transform glow-effect"> EXPLOREAZĂ ISTORIA </button> <button onclick="navigateTo('quiz')" class="px-8 py-4 glass-effect rounded-xl font-orbitron font-bold text-lg hover:bg-white/10 transition-all border border-blue-500/50"> ÎNCEPE QUIZ-UL </button>
+      </div><!-- Stats -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
+       <div class="glass-effect rounded-2xl p-6 card-hover">
+        <div class="font-orbitron text-4xl font-black text-blue-400 stat-number">
+         1916
+        </div>
+        <div class="text-gray-400 mt-2">
+         Anul Fondării
+        </div>
+       </div>
+       <div class="glass-effect rounded-2xl p-6 card-hover">
+        <div class="font-orbitron text-4xl font-black text-blue-400 stat-number">
+         100+
+        </div>
+        <div class="text-gray-400 mt-2">
+         Ani de Istorie
+        </div>
+       </div>
+       <div class="glass-effect rounded-2xl p-6 card-hover">
+        <div class="font-orbitron text-4xl font-black text-blue-400 stat-number">
+         2.5M+
+        </div>
+        <div class="text-gray-400 mt-2">
+         Vehicule/An
+        </div>
+       </div>
+       <div class="glass-effect rounded-2xl p-6 card-hover">
+        <div class="font-orbitron text-4xl font-black text-blue-400 stat-number">
+         140+
+        </div>
+        <div class="text-gray-400 mt-2">
+         Țări
+        </div>
+       </div>
+      </div>
+     </div><!-- Scroll Indicator -->
+     <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+      <svg class="w-8 h-8 text-blue-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+      </svg>
+     </div>
+    </div><!-- Quick Links Section -->
+    <div class="bg-gradient-to-b from-gray-900 to-gray-800 py-20 px-4">
+     <div class="max-w-6xl mx-auto">
+      <h2 class="font-orbitron text-3xl md:text-4xl font-bold text-center mb-12">DESCOPERĂ BMW</h2>
+      <div class="grid md:grid-cols-3 gap-8">
+       <div onclick="navigateTo('history')" class="model-card rounded-2xl p-8 card-hover cursor-pointer group">
+        <div class="w-16 h-16 bmw-blue-gradient rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+         </svg>
+        </div>
+        <h3 class="font-orbitron text-xl font-bold mb-3">ISTORIE</h3>
+        <p class="text-gray-400">De la motoare de avioane la automobile iconice - peste 100 de ani de inovație.</p>
+       </div>
+       <div onclick="navigateTo('models')" class="model-card rounded-2xl p-8 card-hover cursor-pointer group">
+        <div class="w-16 h-16 bmw-blue-gradient rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+         </svg>
+        </div>
+        <h3 class="font-orbitron text-xl font-bold mb-3">MODELE</h3>
+        <p class="text-gray-400">Descoperă gamele legendare - de la Seria 3 la M Power și i Series.</p>
+       </div>
+       <div onclick="navigateTo('quiz')" class="model-card rounded-2xl p-8 card-hover cursor-pointer group">
+        <div class="w-16 h-16 bmw-blue-gradient rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+         </svg>
+        </div>
+        <h3 class="font-orbitron text-xl font-bold mb-3">QUIZ</h3>
+        <p class="text-gray-400">Testează-ți cunoștințele despre BMW într-un quiz interactiv!</p>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section><!-- HISTORY PAGE -->
+   <section id="page-history" class="page min-h-full bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 pt-24 pb-16 px-4">
+    <div class="max-w-6xl mx-auto">
+     <div class="text-center mb-16">
+      <h1 class="font-orbitron text-4xl md:text-5xl font-black mb-4">ISTORIA BMW</h1>
+      <p class="text-gray-400 text-lg max-w-2xl mx-auto">O călătorie prin timp, de la începuturile aviației până la viitorul mobilității</p>
+     </div><!-- Timeline -->
+     <div class="relative">
+      <div class="absolute left-4 md:left-1/2 top-0 bottom-0 w-1 bg-gradient-to-b from-blue-500 via-blue-600 to-blue-700 transform md:-translate-x-1/2"></div><!-- 1916 -->
+      <div class="timeline-item relative flex flex-col md:flex-row items-start mb-12 pl-12 md:pl-0">
+       <div class="md:w-1/2 md:pr-12 md:text-right">
+        <div class="glass-effect rounded-2xl p-6 card-hover"><span class="font-orbitron text-blue-400 text-sm font-bold">7 MARTIE 1916</span>
+         <h3 class="font-orbitron text-2xl font-bold mt-2 mb-3">FONDAREA BMW</h3>
+         <p class="text-gray-300">Bayerische Motoren Werke (BMW) este fondată în München, Germania. Inițial, compania producea motoare pentru avioane, contribuind la efortul de război al Germaniei în Primul Război Mondial.</p>
+         <div class="mt-4 p-4 bg-blue-900/30 rounded-xl">
+          <p class="text-sm text-blue-300">📍 Sediu: München, Bavaria, Germania</p>
+         </div>
+         <div class="mt-4 flex justify-center gap-4">
+    <img src="https://uploads.onecompiler.io/44e455y47/44e456xmr/caca.jpg" alt="BMW fondare" class="rounded-lg max-w-xs shadow-lg" />
+  </div>
+</div>
+        </div>
+       </div>
+       <div class="absolute left-0 md:left-1/2 w-8 h-8 bmw-blue-gradient rounded-full transform md:-translate-x-1/2 flex items-center justify-center glow-effect"><span class="text-xs font-bold">1</span>
+       </div>
+       <div class="hidden md:block md:w-1/2"></div>
+      </div><!-- 1923 -->
+      <div class="timeline-item relative flex flex-col md:flex-row items-start mb-12 pl-12 md:pl-0">
+       <div class="hidden md:block md:w-1/2"></div>
+       <div class="absolute left-0 md:left-1/2 w-8 h-8 bmw-blue-gradient rounded-full transform md:-translate-x-1/2 flex items-center justify-center glow-effect"><span class="text-xs font-bold">2</span>
+       </div>
+       <div class="md:w-1/2 md:pl-12">
+        <div class="glass-effect rounded-2xl p-6 card-hover"><span class="font-orbitron text-blue-400 text-sm font-bold">1923</span>
+         <h3 class="font-orbitron text-2xl font-bold mt-2 mb-3">PRIMA MOTOCICLETĂ</h3>
+         <p class="text-gray-300">BMW R32 devine prima motocicletă produsă de companie. Designul său inovator cu motor boxer și transmisie pe arbore a stabilit standarde pentru industrie.</p>
+         <div class="mt-4 grid grid-cols-2 gap-3">
+          <div class="p-3 bg-blue-900/30 rounded-xl text-center">
+           <p class="text-2xl font-bold text-blue-400">494cc</p>
+           <p class="text-xs text-gray-400">Capacitate</p>
+          </div>
+          <div class="p-3 bg-blue-900/30 rounded-xl text-center">
+           <p class="text-2xl font-bold text-blue-400">8.5 CP</p>
+           <p class="text-xs text-gray-400">Putere</p>
+          </div>
+         </div>
+         <div class="mt-4 flex justify-center">
+  <img src="https://uploads.onecompiler.io/44e455y47/44e456xmr/BMW32.jpg" alt="BMW R32" class="rounded-lg max-w-xs shadow-lg" />
+</div>
+        </div>
+       </div>
+      </div><!-- 1928 -->
+      <div class="timeline-item relative flex flex-col md:flex-row items-start mb-12 pl-12 md:pl-0">
+       <div class="md:w-1/2 md:pr-12 md:text-right">
+        <div class="glass-effect rounded-2xl p-6 card-hover"><span class="font-orbitron text-blue-400 text-sm font-bold">1928</span>
+         <h3 class="font-orbitron text-2xl font-bold mt-2 mb-3">PRIMUL AUTOMOBIL</h3>
+         <p class="text-gray-300">BMW achiziționează Fahrzeugfabrik Eisenach și începe producția de automobile cu BMW Dixi 3/15, bazat pe licența Austin 7 din Marea Britanie.</p>
+         <div class="mt-4 p-4 bg-blue-900/30 rounded-xl">
+          <p class="text-sm text-blue-300">🚗 Prima mașină BMW vândută: 748cc, 15 CP</p>
+         </div>
+                 <div class="mt-4 flex justify-center">
+  <img src="https://uploads.onecompiler.io/44e455y47/44e456xmr/d383a59969bf9fef47ccea387aa4574e9bf34fce.webp" alt="BMW R32" class="rounded-lg max-w-xs shadow-lg" />
+</div>
+        </div>
+       </div>
+       <div class="absolute left-0 md:left-1/2 w-8 h-8 bmw-blue-gradient rounded-full transform md:-translate-x-1/2 flex items-center justify-center glow-effect"><span class="text-xs font-bold">3</span>
+       </div>
+       <div class="hidden md:block md:w-1/2"></div>
+      </div><!-- 1936 -->
+      <div class="timeline-item relative flex flex-col md:flex-row items-start mb-12 pl-12 md:pl-0">
+       <div class="hidden md:block md:w-1/2"></div>
+       <div class="absolute left-0 md:left-1/2 w-8 h-8 bmw-blue-gradient rounded-full transform md:-translate-x-1/2 flex items-center justify-center glow-effect"><span class="text-xs font-bold">4</span>
+       </div>
+       <div class="md:w-1/2 md:pl-12">
+        <div class="glass-effect rounded-2xl p-6 card-hover"><span class="font-orbitron text-blue-400 text-sm font-bold">1936</span>
+         <h3 class="font-orbitron text-2xl font-bold mt-2 mb-3">BMW 328 - LEGENDA</h3>
+         <p class="text-gray-300">Lansarea BMW 328, considerat unul dintre cele mai importante automobile sportive din istorie. A câștigat Mille Miglia în 1940 și a stabilit standarde de design și performanță.</p>
+         <div class="mt-4 grid grid-cols-3 gap-2">
+          <div class="p-2 bg-blue-900/30 rounded-lg text-center">
+           <p class="text-lg font-bold text-blue-400">80 CP</p>
+           <p class="text-xs text-gray-400">Putere</p>
+          </div>
+          <div class="p-2 bg-blue-900/30 rounded-lg text-center">
+           <p class="text-lg font-bold text-blue-400">150+</p>
+           <p class="text-xs text-gray-400">km/h</p>
+          </div>
+          <div class="p-2 bg-blue-900/30 rounded-lg text-center">
+           <p class="text-lg font-bold text-blue-400">464</p>
+           <p class="text-xs text-gray-400">Unități</p>
+          </div>
+         </div>
+         <div class="mt-4 flex justify-center">
+  <img src="https://uploads.onecompiler.io/44e455y47/44e456xmr/328.jpg" alt="BMW R32" class="rounded-lg max-w-xs shadow-lg" />
+</div>
+        </div>
+       </div>
+      </div><!-- 1962 -->
+      <div class="timeline-item relative flex flex-col md:flex-row items-start mb-12 pl-12 md:pl-0">
+       <div class="md:w-1/2 md:pr-12 md:text-right">
+        <div class="glass-effect rounded-2xl p-6 card-hover"><span class="font-orbitron text-blue-400 text-sm font-bold">1962</span>
+         <h3 class="font-orbitron text-2xl font-bold mt-2 mb-3">NEUE KLASSE - RENAȘTEREA</h3>
+         <p class="text-gray-300">BMW 1500 inaugurează seria "Neue Klasse" care salvează compania de la faliment. Acest model a definit caracterul BMW modern: sportiv, elegant și accesibil.</p>
+         <div class="mt-4 p-4 bg-green-900/30 rounded-xl border border-green-500/30">
+          <p class="text-sm text-green-300">✓ Acest model a salvat BMW de la faliment și a pus bazele succesului viitor</p>
+         </div>
+         <div class="mt-4 flex justify-center">
+  <img src="https://uploads.onecompiler.io/44e455y47/44e456xmr/1500.png" alt="BMW R32" class="rounded-lg max-w-xs shadow-lg" />
+</div>
+        </div>
+       </div>
+       <div class="absolute left-0 md:left-1/2 w-8 h-8 bmw-blue-gradient rounded-full transform md:-translate-x-1/2 flex items-center justify-center glow-effect"><span class="text-xs font-bold">5</span>
+       </div>
+       <div class="hidden md:block md:w-1/2"></div>
+      </div><!-- 1972 -->
+      <div class="timeline-item relative flex flex-col md:flex-row items-start mb-12 pl-12 md:pl-0">
+       <div class="hidden md:block md:w-1/2"></div>
+       <div class="absolute left-0 md:left-1/2 w-8 h-8 bmw-blue-gradient rounded-full transform md:-translate-x-1/2 flex items-center justify-center glow-effect"><span class="text-xs font-bold">6</span>
+       </div>
+       <div class="md:w-1/2 md:pl-12">
+        <div class="glass-effect rounded-2xl p-6 card-hover"><span class="font-orbitron text-blue-400 text-sm font-bold">1972</span>
+         <h3 class="font-orbitron text-2xl font-bold mt-2 mb-3">BMW MOTORSPORT GmbH</h3>
+         <p class="text-gray-300">Este fondată divizia BMW Motorsport (acum BMW M GmbH), responsabilă pentru crearea legendelor M. Primul model M1 a apărut în 1978.</p>
+         <div class="mt-4 flex items-center gap-4">
+          <div class="flex gap-1">
+           <div class="w-4 h-8 bg-blue-500 rounded"></div>
+           <div class="w-4 h-8 bg-purple-600 rounded"></div>
+           <div class="w-4 h-8 bg-red-500 rounded"></div>
+          </div>
+          <p class="text-sm text-gray-400">Culorile iconice M Power</p>
+         </div>
+         <div class="mt-4 flex justify-center">
+  <img src="https://uploads.onecompiler.io/44e455y47/44e456xmr/m1.jpg" alt="BMW R32" class="rounded-lg max-w-xs shadow-lg" />
+</div>
+        </div>
+       </div>
+      </div><!-- 2013 -->
+      <div class="timeline-item relative flex flex-col md:flex-row items-start mb-12 pl-12 md:pl-0">
+       <div class="md:w-1/2 md:pr-12 md:text-right">
+        <div class="glass-effect rounded-2xl p-6 card-hover"><span class="font-orbitron text-blue-400 text-sm font-bold">2013</span>
+         <h3 class="font-orbitron text-2xl font-bold mt-2 mb-3">ERA ELECTRICĂ - BMW i</h3>
+         <p class="text-gray-300">Lansarea BMW i3 și i8 marchează intrarea BMW în era vehiculelor electrice și hibride. BMW i reprezintă viitorul mobilității sustenabile.</p>
+         <div class="mt-4 grid grid-cols-2 gap-3">
+          <div class="p-3 bg-blue-900/30 rounded-xl text-center">
+           <p class="text-lg font-bold text-blue-400">i3</p>
+           <p class="text-xs text-gray-400">100% Electric</p>
+          </div>
+          <div class="p-3 bg-blue-900/30 rounded-xl text-center">
+           <p class="text-lg font-bold text-blue-400">i8</p>
+           <p class="text-xs text-gray-400">Plug-in Hybrid</p>
+          </div>
+         </div>
+         <div class="mt-4 flex justify-center">
+  <img src="https://uploads.onecompiler.io/44e455y47/44e456xmr/i8.jpg" alt="BMW R32" class="rounded-lg max-w-xs shadow-lg" />
+</div>
+        </div>
+       </div>
+       <div class="absolute left-0 md:left-1/2 w-8 h-8 bmw-blue-gradient rounded-full transform md:-translate-x-1/2 flex items-center justify-center glow-effect"><span class="text-xs font-bold">7</span>
+       </div>
+       <div class="hidden md:block md:w-1/2"></div>
+      </div>
+     </div>
+     <div class="text-center mt-12"><button onclick="navigateTo('models')" class="px-8 py-4 bmw-blue-gradient rounded-xl font-orbitron font-bold hover:scale-105 transition-transform"> DESCOPERĂ MODELELE → </button>
+     </div>
+    </div>
+   </section><!-- MODELS PAGE -->
+   <section id="page-models" class="page min-h-full bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 pt-24 pb-16 px-4">
+    <div class="max-w-6xl mx-auto">
+     <div class="text-center mb-16">
+      <h1 class="font-orbitron text-4xl md:text-5xl font-black mb-4">GAMELE BMW</h1>
+      <p class="text-gray-400 text-lg max-w-2xl mx-auto">De la sedanuri elegante la SUV-uri puternice și supercaruri electrice</p>
+     </div><!-- Model Categories -->
+     <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6"><!-- Seria 3 -->
+      <div class="model-card rounded-2xl overflow-hidden card-hover group">
+       <div class="h-48 bg-gradient-to-br from-blue-900 to-blue-700 flex items-center justify-center relative overflow-hidden">
+        <div class="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-all"></div>
+<div class="text-center relative z-10">
+  <img src="https://uploads.onecompiler.io/44e455y47/44e456xmr/s3.jpg" alt="Seria 3" class="mx-auto max-h-96 object-contain" />
+</div>
+       </div>
+       <div class="p-6">
+        <h3 class="font-orbitron text-xl font-bold mb-2">SERIA 3</h3>
+        <p class="text-gray-400 text-sm mb-4">Sedanul sportiv care a definit clasa. Din 1975, Seria 3 reprezintă esența plăcerii de a conduce.</p>
+        <div class="flex flex-wrap gap-2"><span class="px-3 py-1 bg-blue-900/50 rounded-full text-xs text-blue-300">318i</span> <span class="px-3 py-1 bg-blue-900/50 rounded-full text-xs text-blue-300">320d</span> <span class="px-3 py-1 bg-blue-900/50 rounded-full text-xs text-blue-300">330e</span> <span class="px-3 py-1 bg-red-900/50 rounded-full text-xs text-red-300">M3</span>
+        </div>
+       </div>
+      </div><!-- Seria 5 -->
+      <div class="model-card rounded-2xl overflow-hidden card-hover group">
+       <div class="h-48 bg-gradient-to-br from-gray-800 to-gray-600 flex items-center justify-center relative overflow-hidden">
+        <div class="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-all"></div>
+       <div class="text-center relative z-10">
+  <img src="https://uploads.onecompiler.io/44e455y47/44e456xmr/s5.jpg" alt="Seria 5" class="mx-auto max-h-96 object-contain" />
+</div>
+       </div>
+       <div class="p-6">
+        <h3 class="font-orbitron text-xl font-bold mb-2">SERIA 5</h3>
+        <p class="text-gray-400 text-sm mb-4">Sedanul executiv care combină luxul cu performanța. Tehnologie de ultimă generație și confort premium.</p>
+        <div class="flex flex-wrap gap-2"><span class="px-3 py-1 bg-blue-900/50 rounded-full text-xs text-blue-300">520d</span> <span class="px-3 py-1 bg-blue-900/50 rounded-full text-xs text-blue-300">530e</span> <span class="px-3 py-1 bg-blue-900/50 rounded-full text-xs text-blue-300">540i</span> <span class="px-3 py-1 bg-red-900/50 rounded-full text-xs text-red-300">M5</span>
+        </div>
+       </div>
+      </div><!-- Seria 7 -->
+      <div class="model-card rounded-2xl overflow-hidden card-hover group">
+       <div class="h-48 bg-gradient-to-br from-purple-900 to-purple-700 flex items-center justify-center relative overflow-hidden">
+        <div class="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-all"></div>
+        <div class="text-center relative z-10">
+  <img src="https://uploads.onecompiler.io/44e455y47/44e456xmr/s7.jpg" alt="Seria 7" class="mx-auto max-h-96 object-contain" />
+</div>
+       </div>
+       <div class="p-6">
+        <h3 class="font-orbitron text-xl font-bold mb-2">SERIA 7</h3>
+        <p class="text-gray-400 text-sm mb-4">Flagship-ul BMW. Limuzina de lux care definește standardele în materie de rafinament și tehnologie.</p>
+        <div class="flex flex-wrap gap-2"><span class="px-3 py-1 bg-blue-900/50 rounded-full text-xs text-blue-300">740d</span> <span class="px-3 py-1 bg-blue-900/50 rounded-full text-xs text-blue-300">750e</span> <span class="px-3 py-1 bg-green-900/50 rounded-full text-xs text-green-300">i7</span> <span class="px-3 py-1 bg-red-900/50 rounded-full text-xs text-red-300">M760e</span>
+        </div>
+       </div>
+      </div><!-- X Series -->
+      <div class="model-card rounded-2xl overflow-hidden card-hover group">
+       <div class="h-48 bg-gradient-to-br from-green-900 to-green-700 flex items-center justify-center relative overflow-hidden">
+        <div class="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-all"></div>
+        <div class="text-center relative z-10">
+  <img src="https://uploads.onecompiler.io/44e455y47/44e456xmr/x.avif" alt="Seria X" class="mx-auto max-h-96 object-contain" />
+</div>
+       </div>
+       <div class="p-6">
+        <h3 class="font-orbitron text-xl font-bold mb-2">SERIA X - SAV/SUV</h3>
+        <p class="text-gray-400 text-sm mb-4">Sports Activity Vehicles care combină versatilitatea cu ADN-ul sportiv BMW. De la compactul X1 la masivul X7.</p>
+        <div class="flex flex-wrap gap-2"><span class="px-3 py-1 bg-blue-900/50 rounded-full text-xs text-blue-300">X1</span> <span class="px-3 py-1 bg-blue-900/50 rounded-full text-xs text-blue-300">X3</span> <span class="px-3 py-1 bg-blue-900/50 rounded-full text-xs text-blue-300">X5</span> <span class="px-3 py-1 bg-blue-900/50 rounded-full text-xs text-blue-300">X7</span> <span class="px-3 py-1 bg-red-900/50 rounded-full text-xs text-red-300">XM</span>
+        </div>
+       </div>
+      </div><!-- M Power -->
+      <div class="model-card rounded-2xl overflow-hidden card-hover group border-2 border-red-500/30">
+       <div class="h-48 bg-gradient-to-br from-red-900 to-red-700 flex items-center justify-center relative overflow-hidden">
+        <div class="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-all"></div>
+         <div class="text-center relative z-10">
+  <img src="https://uploads.onecompiler.io/44e455y47/44e456xmr/m333.jpg" alt="Seria M" class="mx-auto max-h-96 object-contain" />
+</div>
+       </div>
+       <div class="p-6">
+        <h3 class="font-orbitron text-xl font-bold mb-2">BMW M</h3>
+        <p class="text-gray-400 text-sm mb-4">Performanță pură. Modelele M sunt cele mai puternice și mai agile BMW-uri, create pentru circuit și stradă.</p>
+        <div class="flex flex-wrap gap-2"><span class="px-3 py-1 bg-red-900/50 rounded-full text-xs text-red-300">M2</span> <span class="px-3 py-1 bg-red-900/50 rounded-full text-xs text-red-300">M3</span> <span class="px-3 py-1 bg-red-900/50 rounded-full text-xs text-red-300">M4</span> <span class="px-3 py-1 bg-red-900/50 rounded-full text-xs text-red-300">M5</span> <span class="px-3 py-1 bg-red-900/50 rounded-full text-xs text-red-300">M8</span>
+        </div>
+       </div>
+      </div><!-- i Series -->
+      <div class="model-card rounded-2xl overflow-hidden card-hover group border-2 border-cyan-500/30">
+       <div class="h-48 bg-gradient-to-br from-cyan-900 to-cyan-700 flex items-center justify-center relative overflow-hidden">
+        <div class="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-all"></div>
+        <div class="text-center relative z-10">
+  <img src="https://uploads.onecompiler.io/44e455y47/44e456xmr/i4.jpg" alt="Seria I" class="mx-auto max-h-96 object-contain" />
+</div>
+       </div>
+       <div class="p-6">
+        <h3 class="font-orbitron text-xl font-bold mb-2">BMW i</h3>
+        <p class="text-gray-400 text-sm mb-4">Viitorul este electric. Gama BMW i oferă mobilitate sustenabilă fără compromisuri în materie de performanță.</p>
+        <div class="flex flex-wrap gap-2"><span class="px-3 py-1 bg-cyan-900/50 rounded-full text-xs text-cyan-300">i4</span> <span class="px-3 py-1 bg-cyan-900/50 rounded-full text-xs text-cyan-300">i5</span> <span class="px-3 py-1 bg-cyan-900/50 rounded-full text-xs text-cyan-300">i7</span> <span class="px-3 py-1 bg-cyan-900/50 rounded-full text-xs text-cyan-300">iX</span> <span class="px-3 py-1 bg-cyan-900/50 rounded-full text-xs text-cyan-300">iX3</span>
+        </div>
+       </div>
+      </div>
+     </div><!-- Legend Cars Section -->
+     <div class="mt-20">
+      <h2 class="font-orbitron text-3xl font-bold text-center mb-12">LEGENDE BMW</h2>
+      <div class="grid md:grid-cols-2 gap-8">
+       <div class="glass-effect rounded-2xl p-8 card-hover">
+        <div class="flex items-start gap-6">
+<div class="w-20 h-20 rounded-xl overflow-hidden flex-shrink-0">
+  <img src="https://uploads.onecompiler.io/44e455y47/44e456xmr/e30.jpg" alt="BMW E30 M3" class="object-cover w-full h-full" />
+</div>
+         <div>
+          <h3 class="font-orbitron text-xl font-bold mb-2">BMW E30 M3</h3>
+          <p class="text-gray-400 text-sm">1986-1991 • Primul M3, creat pentru omologare în DTM. Motor S14 de 2.3L cu 200+ CP. A câștigat peste 1,500 de curse.</p>
+         </div>
+        </div>
+       </div>
+       <div class="glass-effect rounded-2xl p-8 card-hover">
+         <div class="flex items-start gap-6">
+        <div class="w-20 h-20 rounded-xl overflow-hidden flex-shrink-0">
+  <img src="https://uploads.onecompiler.io/44e455y47/44e456xmr/e46.avif" alt="BMW E46 M3" class="object-cover w-full h-full" />
+</div>
+         <div>
+          <h3 class="font-orbitron text-xl font-bold mb-2">BMW E46 M3</h3>
+          <p class="text-gray-400 text-sm">2000-2006 • Considerat de mulți cel mai bun M3. Motor S54 de 3.2L cu 343 CP, sunet inconfundabil și handling perfect.</p>
+         </div>
+        </div>
+       </div>
+       <div class="glass-effect rounded-2xl p-8 card-hover">
+        <div class="flex items-start gap-6">
+         <div class="w-20 h-20 rounded-xl overflow-hidden flex-shrink-0">
+  <img src="https://uploads.onecompiler.io/44e455y47/44e456xmr/m1.jpg" alt="BMW M1" class="object-cover w-full h-full" />
+</div>
+         <div>
+          <h3 class="font-orbitron text-xl font-bold mb-2">BMW M1</h3>
+          <p class="text-gray-400 text-sm">1978-1981 • Primul și singurul supercar de stradă BMW. Design Giugiaro, motor M88 de 277 CP. Doar 453 unități produse.</p>
+         </div>
+        </div>
+       </div>
+       <div class="glass-effect rounded-2xl p-8 card-hover">
+        <div class="flex items-start gap-6">
+        <div class="w-20 h-20 rounded-xl overflow-hidden flex-shrink-0">
+  <img src="https://uploads.onecompiler.io/44e455y47/44e456xmr/z8.jpg" alt="BMW Z8" class="object-cover w-full h-full" />
+</div>
+         <div>
+          <h3 class="font-orbitron text-xl font-bold mb-2">BMW Z8</h3>
+          <p class="text-gray-400 text-sm">2000-2003 • Roadster retro-modern cu motor V8 de 400 CP. Design inspirat de 507. A apărut în filmul James Bond.</p>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="text-center mt-12"><button onclick="navigateTo('technology')" class="px-8 py-4 bmw-blue-gradient rounded-xl font-orbitron font-bold hover:scale-105 transition-transform"> DESCOPERĂ TEHNOLOGIA → </button>
+     </div>
+    </div>
+   </section><!-- TECHNOLOGY PAGE -->
+   <section id="page-technology" class="page min-h-full bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 pt-24 pb-16 px-4">
+    <div class="max-w-6xl mx-auto">
+     <div class="text-center mb-16">
+      <h1 class="font-orbitron text-4xl md:text-5xl font-black mb-4">TEHNOLOGIE BMW</h1>
+      <p class="text-gray-400 text-lg max-w-2xl mx-auto">Inovații care definesc viitorul mobilității</p>
+     </div><!-- Technology Grid -->
+     <div class="grid md:grid-cols-2 gap-8 mb-16"><!-- EfficientDynamics -->
+      <div class="glass-effect rounded-2xl p-8 card-hover">
+       <div class="flex items-center gap-4 mb-6">
+        <div class="w-14 h-14 bg-green-600 rounded-xl flex items-center justify-center">
+         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+         </svg>
+        </div>
+        <h3 class="font-orbitron text-xl font-bold">EfficientDynamics</h3>
+       </div>
+       <p class="text-gray-300 mb-4">Pachet de tehnologii pentru eficiență maximă: Start/Stop automat, recuperare energie la frânare, aerodinamică optimizată și materiale ușoare.</p>
+       <div class="grid grid-cols-2 gap-3">
+        <div class="p-3 bg-green-900/30 rounded-xl text-center">
+         <p class="text-lg font-bold text-green-400">-20%</p>
+         <p class="text-xs text-gray-400">Consum redus</p>
+        </div>
+        <div class="p-3 bg-green-900/30 rounded-xl text-center">
+         <p class="text-lg font-bold text-green-400">-15%</p>
+         <p class="text-xs text-gray-400">Emisii CO2</p>
+        </div>
+       </div>
+      </div><!-- xDrive -->
+      <div class="glass-effect rounded-2xl p-8 card-hover">
+       <div class="flex items-center gap-4 mb-6">
+        <div class="w-14 h-14 bmw-blue-gradient rounded-xl flex items-center justify-center">
+         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+         </svg>
+        </div>
+        <h3 class="font-orbitron text-xl font-bold">xDrive</h3>
+       </div>
+       <p class="text-gray-300 mb-4">Sistem inteligent de tracțiune integrală care distribuie puterea între punți în funcție de aderență. Reacționează în milisecunde la schimbările de tracțiune.</p>
+       <div class="grid grid-cols-2 gap-3">
+        <div class="p-3 bg-blue-900/30 rounded-xl text-center">
+         <p class="text-lg font-bold text-blue-400">0-100%</p>
+         <p class="text-xs text-gray-400">Distribuție variabilă</p>
+        </div>
+        <div class="p-3 bg-blue-900/30 rounded-xl text-center">
+         <p class="text-lg font-bold text-blue-400">0.1s</p>
+         <p class="text-xs text-gray-400">Timp reacție</p>
+        </div>
+       </div>
+      </div><!-- iDrive -->
+      <div class="glass-effect rounded-2xl p-8 card-hover">
+       <div class="flex items-center gap-4 mb-6">
+        <div class="w-14 h-14 bg-purple-600 rounded-xl flex items-center justify-center">
+         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+         </svg>
+        </div>
+        <h3 class="font-orbitron text-xl font-bold">iDrive 8.5</h3>
+       </div>
+       <p class="text-gray-300 mb-4">Cea mai avansată interfață BMW. Ecran curbat de 14.9", asistent vocal inteligent, integrare smartphone și actualizări over-the-air.</p>
+       <div class="grid grid-cols-2 gap-3">
+        <div class="p-3 bg-purple-900/30 rounded-xl text-center">
+         <p class="text-lg font-bold text-purple-400">14.9"</p>
+         <p class="text-xs text-gray-400">Display curbat</p>
+        </div>
+        <div class="p-3 bg-purple-900/30 rounded-xl text-center">
+         <p class="text-lg font-bold text-purple-400">5G</p>
+         <p class="text-xs text-gray-400">Conectivitate</p>
+        </div>
+       </div>
+      </div><!-- M TwinPower Turbo -->
+      <div class="glass-effect rounded-2xl p-8 card-hover">
+       <div class="flex items-center gap-4 mb-6">
+        <div class="w-14 h-14 bg-red-600 rounded-xl flex items-center justify-center">
+         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" />
+         </svg>
+        </div>
+        <h3 class="font-orbitron text-xl font-bold">M TwinPower Turbo</h3>
+       </div>
+       <p class="text-gray-300 mb-4">Tehnologie de motorizare cu twin-scroll turbo, injecție directă High Precision și distribuție variabilă VALVETRONIC pentru performanță maximă.</p>
+       <div class="grid grid-cols-2 gap-3">
+        <div class="p-3 bg-red-900/30 rounded-xl text-center">
+         <p class="text-lg font-bold text-red-400">625 CP</p>
+         <p class="text-xs text-gray-400">Putere max (M5 CS)</p>
+        </div>
+        <div class="p-3 bg-red-900/30 rounded-xl text-center">
+         <p class="text-lg font-bold text-red-400">750 Nm</p>
+         <p class="text-xs text-gray-400">Cuplu max</p>
+        </div>
+       </div>
+      </div>
+     </div><!-- Electric Technology -->
+     <div class="glass-effect rounded-2xl p-8 mb-8">
+      <h2 class="font-orbitron text-2xl font-bold mb-8 text-center">TEHNOLOGIE ELECTRICĂ BMW i</h2>
+      <div class="grid md:grid-cols-4 gap-6">
+       <div class="text-center">
+        <div class="w-16 h-16 mx-auto bg-cyan-600 rounded-xl flex items-center justify-center mb-4">
+         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+         </svg>
+        </div>
+        <h4 class="font-orbitron font-bold mb-2">eDrive</h4>
+        <p class="text-gray-400 text-sm">Motor electric de înaltă performanță cu eficiență de peste 93%</p>
+       </div>
+       <div class="text-center">
+        <div class="w-16 h-16 mx-auto bg-cyan-600 rounded-xl flex items-center justify-center mb-4">
+         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
+         </svg>
+        </div>
+        <h4 class="font-orbitron font-bold mb-2">Baterie</h4>
+        <p class="text-gray-400 text-sm">Celule cu densitate energetică ridicată, până la 105.7 kWh</p>
+       </div>
+       <div class="text-center">
+        <div class="w-16 h-16 mx-auto bg-cyan-600 rounded-xl flex items-center justify-center mb-4">
+         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707" />
+         </svg>
+        </div>
+        <h4 class="font-orbitron font-bold mb-2">Încărcare</h4>
+        <p class="text-gray-400 text-sm">DC Fast Charging până la 200 kW, 10-80% în 31 minute</p>
+       </div>
+       <div class="text-center">
+        <div class="w-16 h-16 mx-auto bg-cyan-600 rounded-xl flex items-center justify-center mb-4">
+         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+         </svg>
+        </div>
+        <h4 class="font-orbitron font-bold mb-2">Autonomie</h4>
+        <p class="text-gray-400 text-sm">Până la 625 km WLTP cu o singură încărcare (iX xDrive50)</p>
+       </div>
+      </div>
+     </div>
+     <div class="text-center"><button onclick="navigateTo('motorsport')" class="px-8 py-4 bmw-blue-gradient rounded-xl font-orbitron font-bold hover:scale-105 transition-transform"> DESCOPERĂ MOTORSPORT → </button>
+     </div>
+    </div>
+   </section><!-- MOTORSPORT PAGE -->
+   <section id="page-motorsport" class="page min-h-full bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 pt-24 pb-16 px-4">
+    <div class="max-w-6xl mx-auto">
+     <div class="text-center mb-16">
+      <h1 class="font-orbitron text-4xl md:text-5xl font-black mb-4">BMW MOTORSPORT</h1>
+      <p class="text-gray-400 text-lg max-w-2xl mx-auto">Peste 50 de ani de victorii pe circuitele lumii</p>
+      <div class="flex justify-center gap-1 mt-4">
+       <div class="w-6 h-10 bg-blue-500 rounded"></div>
+       <div class="w-6 h-10 bg-purple-600 rounded"></div>
+       <div class="w-6 h-10 bg-red-500 rounded"></div>
+      </div>
+     </div><!-- Championships -->
+     <div class="grid md:grid-cols-3 gap-6 mb-16">
+      <div class="glass-effect rounded-2xl p-6 text-center card-hover">
+       <div class="font-orbitron text-5xl font-black text-blue-400 mb-2">
+        20+
+       </div>
+       <p class="text-gray-300">Titluri DTM</p>
+      </div>
+      <div class="glass-effect rounded-2xl p-6 text-center card-hover">
+       <div class="font-orbitron text-5xl font-black text-blue-400 mb-2">
+        19
+       </div>
+       <p class="text-gray-300">Victorii Le Mans</p>
+      </div>
+      <div class="glass-effect rounded-2xl p-6 text-center card-hover">
+       <div class="font-orbitron text-5xl font-black text-blue-400 mb-2">
+        1999
+       </div>
+       <p class="text-gray-300">Victorie generală Le Mans</p>
+      </div>
+     </div><!-- Racing History -->
+     <div class="space-y-8"><!-- Formula E -->
+      <div class="glass-effect rounded-2xl p-8 card-hover">
+       <div class="flex flex-col md:flex-row gap-8">
+        <div class="md:w-1/3">
+         <div class="h-48 bg-gradient-to-br from-cyan-900 to-cyan-700 rounded-xl flex items-center justify-center">
+  <img src="https://uploads.onecompiler.io/44e455y47/44e456xmr/formula%20e.png" alt="Formula E" class="max-h-full max-w-full object-contain" />
+</div>
+        </div>
+        <div class="md:w-2/3">
+         <h3 class="font-orbitron text-2xl font-bold mb-4">BMW i MOTORSPORT</h3>
+         <p class="text-gray-300 mb-4">BMW a participat în Formula E între 2018-2021, dezvoltând tehnologii electrice de performanță. Experiența acumulată a fost transferată direct în modelele BMW i de stradă.</p>
+         <div class="grid grid-cols-3 gap-4">
+          <div class="p-3 bg-cyan-900/30 rounded-xl text-center">
+           <p class="text-xl font-bold text-cyan-400">4</p>
+           <p class="text-xs text-gray-400">Victorii</p>
+          </div>
+          <div class="p-3 bg-cyan-900/30 rounded-xl text-center">
+           <p class="text-xl font-bold text-cyan-400">340</p>
+           <p class="text-xs text-gray-400">kW Putere</p>
+          </div>
+          <div class="p-3 bg-cyan-900/30 rounded-xl text-center">
+           <p class="text-xl font-bold text-cyan-400">2.8s</p>
+           <p class="text-xs text-gray-400">0-100 km/h</p>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div><!-- DTM -->
+      <div class="glass-effect rounded-2xl p-8 card-hover">
+       <div class="flex flex-col md:flex-row gap-8">
+        <div class="md:w-1/3">
+         <div class="h-48 bg-gradient-to-br from-cyan-900 to-cyan-700 rounded-xl flex items-center justify-center">
+  <img src="https://uploads.onecompiler.io/44e455y47/44e456xmr/dtm.png" alt="DTM" class="max-h-full max-w-full object-contain" />
+</div>
+        </div>
+        <div class="md:w-2/3">
+         <h3 class="font-orbitron text-2xl font-bold mb-4">DOMINAȚIA DTM</h3>
+         <p class="text-gray-300 mb-4">BMW a dominat campionatul DTM de-a lungul decadelor. De la legendarul E30 M3 până la M4 GT3, BMW a câștigat numeroase titluri pentru piloți și constructori.</p>
+         <div class="grid grid-cols-3 gap-4">
+          <div class="p-3 bg-red-900/30 rounded-xl text-center">
+           <p class="text-xl font-bold text-red-400">6</p>
+           <p class="text-xs text-gray-400">Titluri Piloți</p>
+          </div>
+          <div class="p-3 bg-red-900/30 rounded-xl text-center">
+           <p class="text-xl font-bold text-red-400">3</p>
+           <p class="text-xs text-gray-400">Titluri Echipe</p>
+          </div>
+          <div class="p-3 bg-red-900/30 rounded-xl text-center">
+           <p class="text-xl font-bold text-red-400">50+</p>
+           <p class="text-xs text-gray-400">Victorii</p>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div><!-- Le Mans -->
+      <div class="glass-effect rounded-2xl p-8 card-hover">
+       <div class="flex flex-col md:flex-row gap-8">
+        <div class="md:w-1/3">
+        <div class="h-48 bg-gradient-to-br from-cyan-900 to-cyan-700 rounded-xl flex items-center justify-center">
+  <img src="https://uploads.onecompiler.io/44e455y47/44e456xmr/24h%20le%20mans.png" alt="24h le mans" class="max-h-full max-w-full object-contain" />
+</div>
+        </div>
+        <div class="md:w-2/3">
+         <h3 class="font-orbitron text-2xl font-bold mb-4">LEGENDA LE MANS</h3>
+         <p class="text-gray-300 mb-4">În 1999, BMW V12 LMR a câștigat cursa de 24 de ore de la Le Mans la debut. A fost una dintre cele mai impresionante performanțe din istoria curselor de anduranță.</p>
+         <div class="grid grid-cols-3 gap-4">
+          <div class="p-3 bg-yellow-900/30 rounded-xl text-center">
+           <p class="text-xl font-bold text-yellow-400">1999</p>
+           <p class="text-xs text-gray-400">Victorie Generală</p>
+          </div>
+          <div class="p-3 bg-yellow-900/30 rounded-xl text-center">
+           <p class="text-xl font-bold text-yellow-400">V12</p>
+           <p class="text-xs text-gray-400">Motor</p>
+          </div>
+          <div class="p-3 bg-yellow-900/30 rounded-xl text-center">
+           <p class="text-xl font-bold text-yellow-400">580</p>
+           <p class="text-xs text-gray-400">CP</p>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div><!-- Famous Racing Cars -->
+     <div class="mt-16">
+      <h2 class="font-orbitron text-2xl font-bold text-center mb-8">MAȘINI DE CURSE LEGENDARE</h2>
+      <div class="grid md:grid-cols-4 gap-4">
+       <div class="model-card rounded-xl p-4 text-center card-hover">
+        <div class="font-orbitron text-xl font-bold text-blue-400">
+         3.0 CSL
+        </div>
+        <p class="text-gray-400 text-sm mt-2">"Batmobile" - Dominatorul anilor '70</p>
+       </div>
+       <div class="model-card rounded-xl p-4 text-center card-hover">
+        <div class="font-orbitron text-xl font-bold text-blue-400">
+         E30 M3
+        </div>
+        <p class="text-gray-400 text-sm mt-2">Cea mai de succes mașină de turisme</p>
+       </div>
+       <div class="model-card rounded-xl p-4 text-center card-hover">
+        <div class="font-orbitron text-xl font-bold text-blue-400">
+         V12 LMR
+        </div>
+        <p class="text-gray-400 text-sm mt-2">Câștigătorul Le Mans 1999</p>
+       </div>
+       <div class="model-card rounded-xl p-4 text-center card-hover">
+        <div class="font-orbitron text-xl font-bold text-blue-400">
+         M4 GT3
+        </div>
+        <p class="text-gray-400 text-sm mt-2">Cea mai nouă armă BMW</p>
+       </div>
+      </div>
+     </div>
+     <div class="text-center mt-12"><button onclick="navigateTo('quiz')" class="px-8 py-4 bmw-blue-gradient rounded-xl font-orbitron font-bold hover:scale-105 transition-transform glow-effect"> TESTEAZĂ-ȚI CUNOȘTINȚELE → </button>
+     </div>
+    </div>
+   </section><!-- QUIZ PAGE -->
+   <section id="page-quiz" class="page min-h-full bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 pt-24 pb-16 px-4">
+    <div class="max-w-3xl mx-auto"><!-- Quiz Start Screen -->
+     <div id="quiz-start" class="text-center">
+      <div class="float-animation mb-8">
+       <div class="w-24 h-24 mx-auto bmw-blue-gradient rounded-full flex items-center justify-center glow-effect">
+        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+        </svg>
+       </div>
+      </div>
+      <h1 class="font-orbitron text-4xl md:text-5xl font-black mb-4">QUIZ BMW</h1>
+      <p class="text-gray-400 text-lg mb-8">Testează-ți cunoștințele despre istoria și modelele BMW!</p>
+      <div class="glass-effect rounded-2xl p-8 mb-8">
+       <div class="grid grid-cols-3 gap-4 mb-6">
+        <div class="text-center">
+         <p class="font-orbitron text-3xl font-bold text-blue-400">10</p>
+         <p class="text-gray-400 text-sm">Întrebări</p>
+        </div>
+        <div class="text-center">
+         <p class="font-orbitron text-3xl font-bold text-blue-400">30s</p>
+         <p class="text-gray-400 text-sm">Per Întrebare</p>
+        </div>
+        <div class="text-center">
+         <p class="font-orbitron text-3xl font-bold text-blue-400">100</p>
+         <p class="text-gray-400 text-sm">Puncte Max</p>
+        </div>
+       </div>
+       <p class="text-gray-300 text-sm">Răspunde corect și rapid pentru punctaj maxim!</p>
+      </div><button onclick="startQuiz()" class="px-12 py-5 bmw-blue-gradient rounded-xl font-orbitron font-bold text-xl hover:scale-105 transition-transform glow-effect"> ÎNCEPE QUIZ-UL </button>
+     </div><!-- Quiz Questions Screen -->
+     <div id="quiz-questions" class="hidden"><!-- Progress Bar -->
+      <div class="mb-8">
+       <div class="flex justify-between items-center mb-2"><span class="font-orbitron text-sm">Întrebarea <span id="current-question">1</span>/10</span> <span class="font-orbitron text-sm">Scor: <span id="current-score">0</span></span>
+       </div>
+       <div class="h-3 bg-gray-700 rounded-full overflow-hidden">
+        <div id="progress-bar" class="h-full bmw-blue-gradient progress-bar" style="width: 10%"></div>
+       </div>
+      </div><!-- Timer -->
+      <div class="flex justify-center mb-6">
+       <div class="glass-effect rounded-full px-6 py-2 flex items-center gap-2">
+        <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg><span id="timer" class="font-orbitron text-xl font-bold text-blue-400">30</span>
+       </div>
+      </div><!-- Question Card -->
+      <div class="glass-effect rounded-2xl p-8 mb-6">
+       <h2 id="question-text" class="font-orbitron text-xl md:text-2xl font-bold text-center mb-8">Întrebarea va apărea aici...</h2>
+       <div id="options-container" class="space-y-4"><!-- Options will be inserted here -->
+       </div>
+      </div><!-- Feedback -->
+      <div id="feedback" class="hidden text-center">
+       <div id="feedback-content" class="glass-effect rounded-xl p-4 mb-4"></div><button onclick="nextQuestion()" class="px-8 py-3 bmw-blue-gradient rounded-xl font-orbitron font-bold hover:scale-105 transition-transform"> URMĂTOAREA → </button>
+      </div>
+     </div><!-- Quiz Results Screen -->
+     <div id="quiz-results" class="hidden text-center">
+      <div class="float-animation mb-8">
+       <div id="result-icon" class="w-32 h-32 mx-auto rounded-full flex items-center justify-center glow-effect"><!-- Icon will be set based on score -->
+       </div>
+      </div>
+      <h1 id="result-title" class="font-orbitron text-4xl font-black mb-4">Felicitări!</h1>
+      <p id="result-subtitle" class="text-gray-400 text-lg mb-8">Ai terminat quiz-ul!</p>
+      <div class="glass-effect rounded-2xl p-8 mb-8">
+       <div class="font-orbitron text-6xl font-black text-blue-400 mb-2"><span id="final-score">0</span>/100
+       </div>
+       <p class="text-gray-400">Puncte obținute</p>
+       <div class="grid grid-cols-2 gap-4 mt-6">
+        <div class="p-4 bg-green-900/30 rounded-xl">
+         <p class="font-orbitron text-2xl font-bold text-green-400" id="correct-count">0</p>
+         <p class="text-gray-400 text-sm">Corecte</p>
+        </div>
+        <div class="p-4 bg-red-900/30 rounded-xl">
+         <p class="font-orbitron text-2xl font-bold text-red-400" id="wrong-count">0</p>
+         <p class="text-gray-400 text-sm">Greșite</p>
+        </div>
+       </div>
+      </div>
+      <div class="flex flex-col sm:flex-row justify-center gap-4"><button onclick="restartQuiz()" class="px-8 py-4 bmw-blue-gradient rounded-xl font-orbitron font-bold hover:scale-105 transition-transform"> ÎNCEARCĂ DIN NOU </button> <button onclick="navigateTo('home')" class="px-8 py-4 glass-effect rounded-xl font-orbitron font-bold hover:bg-white/10 transition-all border border-blue-500/50"> ÎNAPOI ACASĂ </button>
+      </div>
+     </div>
+    </div>
+   </section>
+  </main><!-- Footer -->
+  <footer class="bg-gray-900 border-t border-gray-800 py-8 px-4">
+   <div class="max-w-6xl mx-auto text-center">
+    <div class="flex items-center justify-center gap-3 mb-4">
+     <div class="w-10 h-10 rounded-full bmw-blue-gradient flex items-center justify-center">
+      <svg viewbox="0 0 100 100" class="w-6 h-6"><circle cx="50" cy="50" r="48" fill="none" stroke="white" stroke-width="3" /> <path d="M50 2 A48 48 0 0 1 98 50 L50 50 Z" fill="#0066cc" /> <path d="M2 50 A48 48 0 0 1 50 98 L50 50 Z" fill="#0066cc" /> <path d="M50 2 A48 48 0 0 0 2 50 L50 50 Z" fill="white" /> <path d="M98 50 A48 48 0 0 0 50 98 L50 50 Z" fill="white" />
+      </svg>
+     </div><span class="font-orbitron font-bold">BMW HISTORY</span>
+    </div>
+    <p class="text-gray-500 text-sm">Proiect pentru Atestatul de Informatică și TIC</p>
+    <p class="text-gray-600 text-xs mt-2">© 2024 • Toate drepturile rezervate BMW AG pentru marca și logo-ul BMW</p>
+   </div>
+  </footer>
+  <script>
+    // Default configuration
+    const defaultConfig = {
+      site_title: 'BMW HISTORY',
+      hero_subtitle: 'SHEER DRIVING PLEASURE'
+    };
+
+    // Quiz Questions
+    const quizQuestions = [
+      {
+        question: "În ce an a fost fondată compania BMW?",
+        options: ["1910", "1916", "1922", "1928"],
+        correct: 1
+      },
+      {
+        question: "Ce însemnă acronimul BMW?",
+        options: ["Bavarian Motor Works", "Berlin Motor Werke", "Bayerische Motoren Werke", "Best Motor Worldwide"],
+        correct: 2
+      },
+      {
+        question: "Ce producea inițial BMW?",
+        options: ["Motociclete", "Automobile", "Motoare de avioane", "Biciclete"],
+        correct: 2
+      },
+      {
+        question: "În ce an a fost lansată prima motocicletă BMW?",
+        options: ["1920", "1923", "1928", "1932"],
+        correct: 1
+      },
+      {
+        question: "Care este sediul central al BMW?",
+        options: ["München", "Stuttgart", "Berlin", "Frankfurt"],
+        correct: 0
+      },
+      {
+        question: "În ce an a fost fondată divizia BMW Motorsport (M)?",
+        options: ["1968", "1972", "1978", "1982"],
+        correct: 1
+      },
+      {
+        question: "Care a fost primul model BMW M?",
+        options: ["M3", "M5", "M1", "M6"],
+        correct: 2
+      },
+      {
+        question: "Ce model BMW a câștigat Le Mans în 1999?",
+        options: ["M3 GTR", "V12 LMR", "Z4 GT3", "M8 GTE"],
+        correct: 1
+      },
+      {
+        question: "Care este sloganul oficial BMW?",
+        options: ["The Ultimate Driving Machine", "Performance First", "Innovation and Technology", "Sheer Driving Pleasure"],
+        correct: 3
+      },
+      {
+        question: "În ce an a fost lansat primul BMW electric (i3)?",
+        options: ["2010", "2013", "2015", "2018"],
+        correct: 1
+      }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+    let correctAnswers = 0;
+    let timerInterval = null;
+    let timeLeft = 30;
+
+    // Navigation function
+    function navigateTo(pageId) {
+      // Hide all pages
+      document.querySelectorAll('.page').forEach(page => {
+        page.classList.remove('active');
+      });
+      
+      // Show target page
+      const targetPage = document.getElementById('page-' + pageId);
+      if (targetPage) {
+        targetPage.classList.add('active');
+      }
+      
+      // Update nav buttons
+      document.querySelectorAll('[data-page]').forEach(btn => {
+        btn.classList.remove('bg-blue-600/30');
+        if (btn.dataset.page === pageId) {
+          btn.classList.add('bg-blue-600/30');
+        }
+      });
+      
+      // Scroll to top
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Mobile menu toggle
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobile-menu');
+      menu.classList.toggle('hidden');
+    }
+
+    // Quiz functions
+    function startQuiz() {
+      currentQuestion = 0;
+      score = 0;
+      correctAnswers = 0;
+      
+      document.getElementById('quiz-start').classList.add('hidden');
+      document.getElementById('quiz-questions').classList.remove('hidden');
+      document.getElementById('quiz-results').classList.add('hidden');
+      
+      showQuestion();
+    }
+
+    function showQuestion() {
+      const q = quizQuestions[currentQuestion];
+      
+      document.getElementById('current-question').textContent = currentQuestion + 1;
+      document.getElementById('current-score').textContent = score;
+      document.getElementById('progress-bar').style.width = ((currentQuestion + 1) / quizQuestions.length * 100) + '%';
+      document.getElementById('question-text').textContent = q.question;
+      document.getElementById('feedback').classList.add('hidden');
+      
+      const optionsContainer = document.getElementById('options-container');
+      optionsContainer.innerHTML = '';
+      
+      q.options.forEach((option, index) => {
+        const btn = document.createElement('button');
+        btn.className = 'quiz-option w-full p-4 glass-effect rounded-xl text-left font-semibold hover:border-blue-500 border-2 border-transparent transition-all';
+        btn.innerHTML = `<span class="text-blue-400 mr-3">${String.fromCharCode(65 + index)}.</span> ${option}`;
+        btn.onclick = () => selectAnswer(index);
+        optionsContainer.appendChild(btn);
+      });
+      
+      // Start timer
+      timeLeft = 30;
+      document.getElementById('timer').textContent = timeLeft;
+      
+      if (timerInterval) clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        document.getElementById('timer').textContent = timeLeft;
+        
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          selectAnswer(-1); // Time's up
+        }
+      }, 1000);
+    }
+
+    function selectAnswer(selectedIndex) {
+      clearInterval(timerInterval);
+      
+      const q = quizQuestions[currentQuestion];
+      const options = document.querySelectorAll('.quiz-option');
+      
+      options.forEach((opt, index) => {
+        opt.classList.add('disabled');
+        opt.onclick = null;
+        
+        if (index === q.correct) {
+          opt.classList.add('correct');
+        } else if (index === selectedIndex && selectedIndex !== q.correct) {
+          opt.classList.add('incorrect');
+        }
+      });
+      
+      const feedbackDiv = document.getElementById('feedback');
+      const feedbackContent = document.getElementById('feedback-content');
+      
+      if (selectedIndex === q.correct) {
+        const points = Math.max(5, Math.round(10));
+        score += points;
+        correctAnswers++;
+        feedbackContent.innerHTML = `<span class="text-green-400 font-bold">✓ Corect!</span> +${points} puncte`;
+        feedbackContent.className = 'glass-effect rounded-xl p-4 mb-4 border border-green-500/50';
+      } else if (selectedIndex === -1) {
+        feedbackContent.innerHTML = `<span class="text-yellow-400 font-bold">⏱ Timpul a expirat!</span> Răspunsul corect era: ${q.options[q.correct]}`;
+        feedbackContent.className = 'glass-effect rounded-xl p-4 mb-4 border border-yellow-500/50';
+      } else {
+        feedbackContent.innerHTML = `<span class="text-red-400 font-bold">✗ Greșit!</span> Răspunsul corect era: ${q.options[q.correct]}`;
+        feedbackContent.className = 'glass-effect rounded-xl p-4 mb-4 border border-red-500/50';
+      }
+      
+      feedbackDiv.classList.remove('hidden');
+    }
+
+    function nextQuestion() {
+      currentQuestion++;
+      
+      if (currentQuestion >= quizQuestions.length) {
+        showResults();
+      } else {
+        showQuestion();
+      }
+    }
+
+    function showResults() {
+      document.getElementById('quiz-questions').classList.add('hidden');
+      document.getElementById('quiz-results').classList.remove('hidden');
+      
+      const finalScore = score;
+      const wrongAnswers = quizQuestions.length - correctAnswers;
+      
+      document.getElementById('final-score').textContent = finalScore;
+      document.getElementById('correct-count').textContent = correctAnswers;
+      document.getElementById('wrong-count').textContent = wrongAnswers;
+      
+      const resultIcon = document.getElementById('result-icon');
+      const resultTitle = document.getElementById('result-title');
+      const resultSubtitle = document.getElementById('result-subtitle');
+      
+      if (finalScore >= 80) {
+        resultIcon.className = 'w-32 h-32 mx-auto rounded-full flex items-center justify-center glow-effect bg-gradient-to-br from-yellow-500 to-yellow-700';
+        resultIcon.innerHTML = '<span class="text-5xl">🏆</span>';
+        resultTitle.textContent = 'Expert BMW!';
+        resultSubtitle.textContent = 'Ești un adevărat cunoscător BMW!';
+      } else if (finalScore >= 50) {
+        resultIcon.className = 'w-32 h-32 mx-auto rounded-full flex items-center justify-center glow-effect bmw-blue-gradient';
+        resultIcon.innerHTML = '<span class="text-5xl">👍</span>';
+        resultTitle.textContent = 'Bine lucrat!';
+        resultSubtitle.textContent = 'Ai cunoștințe solide despre BMW!';
+      } else {
+        resultIcon.className = 'w-32 h-32 mx-auto rounded-full flex items-center justify-center glow-effect bg-gradient-to-br from-gray-600 to-gray-800';
+        resultIcon.innerHTML = '<span class="text-5xl">📚</span>';
+        resultTitle.textContent = 'Mai exersează!';
+        resultSubtitle.textContent = 'Revizuiește site-ul și încearcă din nou!';
+      }
+    }
+
+    function restartQuiz() {
+      document.getElementById('quiz-results').classList.add('hidden');
+      document.getElementById('quiz-start').classList.remove('hidden');
+    }
+
+    // Element SDK Integration
+    function initElementSdk() {
+      if (window.elementSdk) {
+        window.elementSdk.init({
+          defaultConfig: defaultConfig,
+          onConfigChange: async (config) => {
+            // Update site title
+            const navTitle = document.getElementById('nav-title');
+            if (navTitle) {
+              navTitle.textContent = config.site_title || defaultConfig.site_title;
+            }
+            
+            // Update hero subtitle
+            const heroSubtitle = document.getElementById('hero-subtitle');
+            if (heroSubtitle) {
+              heroSubtitle.textContent = config.hero_subtitle || defaultConfig.hero_subtitle;
+            }
+          },
+          mapToCapabilities: (config) => ({
+            recolorables: [],
+            borderables: [],
+            fontEditable: undefined,
+            fontSizeable: undefined
+          }),
+          mapToEditPanelValues: (config) => new Map([
+            ['site_title', config.site_title || defaultConfig.site_title],
+            ['hero_subtitle', config.hero_subtitle || defaultConfig.hero_subtitle]
+          ])
+        });
+      }
+    }
+
+    // Initialize
+    initElementSdk();
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9d06faa4b5fad403',t:'MTc3MTUxNjg0Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
